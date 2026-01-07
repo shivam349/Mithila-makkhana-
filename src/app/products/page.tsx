@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Product } from '@/types';
@@ -8,7 +8,7 @@ import { formatPrice, calculateDiscount } from '@/lib/utils';
 import { useCartStore } from '@/store/cartStore';
 import toast from 'react-hot-toast';
 
-export default function ProductsPage() {
+function ProductsContent() {
   const searchParams = useSearchParams();
   const category = searchParams.get('category');
   const [products, setProducts] = useState<Product[]>([]);
@@ -164,5 +164,18 @@ export default function ProductsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto px-4 py-12 text-center">
+        <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
+        <p className="mt-4 text-gray-600">Loading products...</p>
+      </div>
+    }>
+      <ProductsContent />
+    </Suspense>
   );
 }

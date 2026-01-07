@@ -4,12 +4,13 @@ import Product from '@/models/Product';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     await connectDB();
+    const { slug } = await params;
 
-    const product = await Product.findOne({ slug: params.slug, isActive: true });
+    const product = await Product.findOne({ slug, isActive: true });
 
     if (!product) {
       return NextResponse.json(
@@ -30,15 +31,16 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     await connectDB();
+    const { slug } = await params;
 
     const body = await request.json();
 
     const product = await Product.findOneAndUpdate(
-      { slug: params.slug },
+      { slug },
       body,
       { new: true, runValidators: true }
     );
@@ -62,12 +64,13 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     await connectDB();
+    const { slug } = await params;
 
-    const product = await Product.findOneAndDelete({ slug: params.slug });
+    const product = await Product.findOneAndDelete({ slug });
 
     if (!product) {
       return NextResponse.json(

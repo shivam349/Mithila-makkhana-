@@ -5,13 +5,14 @@ import Review from '@/models/Review';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     await connectDB();
+    const { slug } = await params;
 
     // Find product by slug
-    const product = await Product.findOne({ slug: params.slug });
+    const product = await Product.findOne({ slug });
     
     if (!product) {
       return NextResponse.json(
@@ -35,15 +36,16 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     await connectDB();
+    const { slug } = await params;
 
     const body = await request.json();
 
     // Find product by slug
-    const product = await Product.findOne({ slug: params.slug });
+    const product = await Product.findOne({ slug });
     
     if (!product) {
       return NextResponse.json(
