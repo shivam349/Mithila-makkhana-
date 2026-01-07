@@ -4,10 +4,11 @@ import Order from '@/models/Order';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
+    const params = await context.params;
 
     const order = await Order.findById(params.id).populate('items.product');
 
@@ -29,10 +30,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
+    const params = await context.params;
 
     const body = await request.json();
     const order = await Order.findByIdAndUpdate(

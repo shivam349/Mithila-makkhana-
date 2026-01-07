@@ -4,10 +4,11 @@ import Product from '@/models/Product';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
+    const params = await context.params;
 
     const product = await Product.findById(params.id);
 
@@ -29,10 +30,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
+    const params = await context.params;
 
     const body = await request.json();
     const product = await Product.findByIdAndUpdate(
@@ -59,10 +61,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
+    const params = await context.params;
 
     const product = await Product.findByIdAndDelete(params.id);
 
